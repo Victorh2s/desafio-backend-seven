@@ -5,6 +5,7 @@ export function AuthHandleErrors(response: Response, error: unknown) {
     EmailAlreadyExistError: 409,
     AuthInvalidError: 401,
     NotAuthorization: 401,
+    NotAuthorizationRole: 403,
   };
 
   if (error instanceof Error) {
