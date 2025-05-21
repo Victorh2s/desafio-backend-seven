@@ -12,14 +12,14 @@ interface TokenPayLoad {
 }
 
 export async function VerifyTokenMiddleware(
-  request: Request,
-  response: Response,
+  req: Request,
+  res: Response,
   next: NextFunction,
 ) {
-  const { authorization } = request.headers;
+  const { authorization } = req.headers;
 
   if (!authorization) {
-    AuthHandleErrors(response, new NotAuthorization());
+    AuthHandleErrors(res, new NotAuthorization());
     return;
   }
 
@@ -28,18 +28,18 @@ export async function VerifyTokenMiddleware(
   try {
     const authRepository = new AuthRepository();
 
-    const data = jwt.verify(token, process.env.TOKEN_SECRET as string);
+    const data = jwt.verify(token, process.env.JWT_SECRET as string);
 
     const { id } = data as TokenPayLoad;
 
     const user = await authRepository.findUserById(id);
 
     if (!user) {
-      AuthHandleErrors(response, new NotAuthorization());
+      AuthHandleErrors(res, new NotAuthorization());
       return;
     }
 
-    request.auth_routes = {
+    req.auth_routes = {
       userId: user.id,
       token: token,
       email: user.email,
@@ -48,6 +48,6 @@ export async function VerifyTokenMiddleware(
 
     return next();
   } catch (error) {
-    AuthHandleErrors(response, error);
+    AuthHandleErrors(res, error);
   }
 }
