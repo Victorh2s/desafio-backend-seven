@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthHandleErrors } from "../errors/auth-handle.erros";
 import { $Enums } from "prisma/generated";
-import { NotAuthorizationRole } from "../errors/not-authorization-role";
+import { NotAuthorizationRoleError } from "../errors/not-authorization-role.error";
 
 export function VerifyRoleMiddleware(roleToVerify: $Enums.Role) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -9,7 +9,7 @@ export function VerifyRoleMiddleware(roleToVerify: $Enums.Role) {
 
     try {
       if (role !== "ADMIN" && role !== roleToVerify) {
-        AuthHandleErrors(res, new NotAuthorizationRole());
+        AuthHandleErrors(res, new NotAuthorizationRoleError());
         return;
       }
 

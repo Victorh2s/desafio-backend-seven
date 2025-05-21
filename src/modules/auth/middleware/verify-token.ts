@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AuthRepository } from "src/shared/config/prisma/database/auth-repository";
-import { NotAuthorization } from "../errors/not-authorization";
+import { NotAuthorizationError } from "../errors/not-authorization.error";
 import { AuthHandleErrors } from "../errors/auth-handle.erros";
 
 interface TokenPayLoad {
@@ -19,7 +19,7 @@ export async function VerifyTokenMiddleware(
   const { authorization } = req.headers;
 
   if (!authorization) {
-    AuthHandleErrors(res, new NotAuthorization());
+    AuthHandleErrors(res, new NotAuthorizationError());
     return;
   }
 
@@ -35,7 +35,7 @@ export async function VerifyTokenMiddleware(
     const user = await authRepository.findUserById(id);
 
     if (!user) {
-      AuthHandleErrors(res, new NotAuthorization());
+      AuthHandleErrors(res, new NotAuthorizationError());
       return;
     }
 

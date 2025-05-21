@@ -3,7 +3,7 @@ import { compare } from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { AuthService } from "../../auth.service";
 import { LoginDto } from "../../dto/login.dto";
-import { AuthInvalidError } from "../../errors/auth-invalid";
+import { AuthInvalidError } from "../../errors/auth-invalid.error";
 
 jest.mock("bcryptjs", () => ({
   hash: jest.fn().mockResolvedValue("hashed_password"),

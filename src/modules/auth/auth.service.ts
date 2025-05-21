@@ -4,7 +4,7 @@ import { compare, hash } from "bcryptjs";
 import { EmailAlreadyExistError } from "./errors/email-already-exist.error";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register-user.dto";
-import { AuthInvalidError } from "./errors/auth-invalid";
+import { AuthInvalidError } from "./errors/auth-invalid.error";
 
 export class AuthService {
   constructor(private authRepository: AuthRepository) {}

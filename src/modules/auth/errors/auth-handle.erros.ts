@@ -4,8 +4,8 @@ export function AuthHandleErrors(response: Response, error: unknown) {
   const errorMap: { [key: string]: number } = {
     EmailAlreadyExistError: 409,
     AuthInvalidError: 401,
-    NotAuthorization: 401,
-    NotAuthorizationRole: 403,
+    NotAuthorizationError: 401,
+    NotAuthorizationRoleError: 403,
   };
 
   if (error instanceof Error) {
