@@ -13,7 +13,7 @@ jest.mock("bcryptjs", () => ({
   hash: jest.fn().mockResolvedValue("hashed_password"),
 }));
 
-describe("AuthService", () => {
+describe("AuthService - Register User", () => {
   let authService: AuthService;
 
   beforeEach(() => {

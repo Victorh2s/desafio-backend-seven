@@ -9,3 +9,4 @@ const service = new AuthService(repository);
 const controller = new AuthController(service);
 
 authRouter.post("/register", controller.registerUser);
+authRouter.post("/login", controller.login);
