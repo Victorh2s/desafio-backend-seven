@@ -3,15 +3,28 @@ import { AppointmentService } from "../appointment.service";
 import { AppointmentRepository } from "src/shared/config/prisma/database/appointment-repository";
 import { InvalidDataError } from "../errors/invalid-data.error";
 import { NotPossibleQueryPastDatesError } from "../errors/not-possible-query-paste.error";
-import { NotFoundSpecialistsError } from "../errors/not-found-specialists.error";
+import { NotFoundSpecialistsBySpecialtyError } from "../errors/not-found-specialists-by-specialty.error";
+import { ClientRepository } from "src/shared/config/prisma/database/client-repository";
+import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
 
 const mockSpecialistRepository: jest.Mocked<SpecialistRepository> = {
   findManySpecialistsBySpecialty: jest.fn(),
   registerAvailability: jest.fn(),
+  findSpecialistsByID: jest.fn(),
 };
 
 const mockAppointmentRepository: jest.Mocked<AppointmentRepository> = {
   findManyExistingAppointments: jest.fn(),
+  createAppointment: jest.fn(),
+  findAppointmentBySpecialististId: jest.fn(),
+};
+
+const mockClientRepository: jest.Mocked<ClientRepository> = {
+  findClientByUserId: jest.fn(),
+};
+
+const mockAuditLogRepository: jest.Mocked<AuditLogRepository> = {
+  createAuditLog: jest.fn(),
 };
 
 describe("AppointmentService", () => {
@@ -21,7 +34,9 @@ describe("AppointmentService", () => {
     jest.clearAllMocks();
     appointmentService = new AppointmentService(
       mockSpecialistRepository,
+      mockClientRepository,
       mockAppointmentRepository,
+      mockAuditLogRepository,
     );
   });
 
@@ -113,8 +128,9 @@ describe("AppointmentService", () => {
 
       await expect(
         appointmentService.getAvailableSlots(currentDate, "nutrition"),
-      ).rejects.toBeInstanceOf(NotFoundSpecialistsError);
+      ).rejects.toBeInstanceOf(NotFoundSpecialistsBySpecialtyError);
     });
+
     it("should return available slots for future date", async () => {
       const futureDate = new Date();
       futureDate.setFullYear(futureDate.getFullYear() + 1);

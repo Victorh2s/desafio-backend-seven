@@ -3,13 +3,101 @@ import { SpecialistRepository } from "src/shared/config/prisma/database/speciali
 import { AppointmentRepository } from "src/shared/config/prisma/database/appointment-repository";
 import { InvalidDataError } from "./errors/invalid-data.error";
 import { NotPossibleQueryPastDatesError } from "./errors/not-possible-query-paste.error";
-import { NotFoundSpecialistsError } from "./errors/not-found-specialists.error";
+import { NotFoundSpecialistsBySpecialtyError } from "./errors/not-found-specialists-by-specialty.error";
+import { ClientRepository } from "src/shared/config/prisma/database/client-repository";
+import { NotFoundClientError } from "./errors/not-found-client.error";
+import { NotFoundSpecialistError } from "./errors/not-found-specialist.error";
+import { SlotNotAvailableError } from "./errors/slot-not-available.error";
+import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
 
 export class AppointmentService {
   constructor(
     private specialistRepository: SpecialistRepository,
+    private clientRepository: ClientRepository,
     private appointmentRepository: AppointmentRepository,
+    private auditLogRepository: AuditLogRepository,
   ) {}
+
+  async createAppointment(
+    userId: string,
+    specialistId: string,
+    date: string,
+    time: string,
+    scheduledById: string,
+  ) {
+    const foundClientByUserId =
+      await this.clientRepository.findClientByUserId(userId);
+    if (!foundClientByUserId) {
+      throw new NotFoundClientError();
+    }
+
+    const clientId = foundClientByUserId.id;
+
+    const specialist =
+      await this.specialistRepository.findSpecialistsByID(specialistId);
+
+    if (!specialist) {
+      throw new NotFoundSpecialistError();
+    }
+
+    const appointmentDateTime = new Date(`${date}T${time}`);
+    const isAvailable = await this.checkAvailability(
+      specialistId,
+      appointmentDateTime,
+    );
+
+    if (!isAvailable) {
+      throw new SlotNotAvailableError();
+    }
+
+    const appointment = await this.appointmentRepository.createAppointment(
+      clientId,
+      specialistId,
+      scheduledById,
+      appointmentDateTime,
+      time,
+    );
+
+    await this.auditLogRepository.createAuditLog(
+      userId,
+      appointment.id,
+      appointmentDateTime,
+      time,
+    );
+
+    return;
+  }
+
+  async checkAvailability(specialistId: string, dateTime: Date) {
+    const existingAppointment =
+      await this.appointmentRepository.findAppointmentBySpecialististId(
+        specialistId,
+        dateTime,
+      );
+
+    if (existingAppointment) {
+      return false;
+    }
+
+    const specialist =
+      await this.specialistRepository.findSpecialistsByID(specialistId);
+
+    if (!specialist) return false;
+
+    const availability = specialist.availability as Record<string, string[]>;
+    const dayOfWeek = dateTime
+      .toLocaleString("en-US", { weekday: "long" })
+      .toLowerCase();
+    const availableTimes = availability[dayOfWeek] || [];
+
+    const timeStr = dateTime.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    return availableTimes.includes(timeStr);
+  }
 
   async getAvailableSlots(date: string, specialty: string) {
     const inputDate = new Date(date + "T00:00:00");
@@ -32,7 +120,7 @@ export class AppointmentService {
       await this.specialistRepository.findManySpecialistsBySpecialty(specialty);
 
     if (specialists.length === 0) {
-      throw new NotFoundSpecialistsError();
+      throw new NotFoundSpecialistsBySpecialtyError();
     }
 
     const availableSlots = await Promise.all(

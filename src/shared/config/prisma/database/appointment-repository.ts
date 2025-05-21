@@ -17,4 +17,39 @@ export class AppointmentRepository {
     });
     return existingAppointments;
   }
+
+  async findAppointmentBySpecialististId(
+    specialististId: string,
+    dateTime: Date,
+  ) {
+    const existingAppointment = await prisma.appointment.findFirst({
+      where: {
+        specialist_id: specialististId,
+        date: dateTime,
+        status: { notIn: ["cancelled", "expired"] },
+      },
+    });
+
+    return existingAppointment;
+  }
+
+  async createAppointment(
+    clientId: string,
+    specialistId: string,
+    scheduledById: string,
+    appointmentDateTime: Date,
+    time: string,
+  ) {
+    const appointment = await prisma.appointment.create({
+      data: {
+        client_id: clientId,
+        specialist_id: specialistId,
+        scheduled_by_id: scheduledById,
+        date: appointmentDateTime,
+        time,
+        status: "pending",
+      },
+    });
+    return appointment;
+  }
 }

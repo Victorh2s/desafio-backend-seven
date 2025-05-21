@@ -5,13 +5,20 @@ import { AppointmentController } from "./appointment.controller";
 import { AppointmentService } from "./appointment.service";
 import { AppointmentRepository } from "src/shared/config/prisma/database/appointment-repository";
 import { VerifyRoleMiddleware } from "../auth/middleware/verify-role";
+import { ClientRepository } from "src/shared/config/prisma/database/client-repository";
+import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
 
 export const appointmentRouter = Router();
 const specialistRepository = new SpecialistRepository();
+const clientRepository = new ClientRepository();
 const appointmentRepository = new AppointmentRepository();
+const auditLogRepository = new AuditLogRepository();
+
 const service = new AppointmentService(
   specialistRepository,
+  clientRepository,
   appointmentRepository,
+  auditLogRepository,
 );
 const controller = new AppointmentController(service);
 
@@ -20,4 +27,11 @@ appointmentRouter.get(
   VerifyTokenMiddleware,
   VerifyRoleMiddleware("client"),
   controller.getAvailableSlots,
+);
+
+appointmentRouter.post(
+  "/create",
+  VerifyTokenMiddleware,
+  VerifyRoleMiddleware("client"),
+  controller.createAppointment,
 );

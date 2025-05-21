@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getAvailableSlotsDto } from "./dto/get-available-slots.dto";
 import { AppointmentService } from "./appointment.service";
 import { AppointmentHandleErrors } from "./errors/appointment-handle.errors";
+import { createAppointmentDto } from "./dto/create-appointment.dto";
 
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
@@ -17,6 +18,27 @@ export class AppointmentController {
       return res.status(201).json(service);
     } catch (error) {
       AppointmentHandleErrors(res, error);
+    }
+  };
+
+  createAppointment = async (req: Request, res: Response) => {
+    try {
+      const { specialistId, date, time } = createAppointmentDto.parse(req.body);
+
+      const { userId } = req.auth_routes;
+      const scheduledById = userId;
+      const appointment = await this.appointmentService.createAppointment(
+        userId,
+        specialistId,
+        date,
+        time,
+        scheduledById,
+      );
+      res.status(201).json(appointment);
+    } catch (error) {
+      res.status(400).json({
+        error: error instanceof Error ? error.message : "Invalid data",
+      });
     }
   };
 }
