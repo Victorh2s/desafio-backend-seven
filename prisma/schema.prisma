@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  password   String
+  role       Role     @default(client)
+  priority   Boolean  @default(false)
+  active     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  specialist Specialist?
+  client     Client?
+  scheduler  Appointment[] @relation("scheduled_by")
+  auditLogs  AuditLog[]
+}
+
+enum Role {
+  client
+  specialist
+  scheduler
+  admin
+}
+
+model Specialist {
+  id                 String   @id @default(uuid())
+  user_id            String   @unique
+  user               User     @relation(fields: [user_id], references: [id])
+  specialty          String
+  daily_limit        Int
+  min_interval_minutes Int
+  availability       Json
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+  appointments       Appointment[]
+}
+
+model Client {
+  id         String   @id @default(uuid())
+  user_id    String   @unique
+  user       User     @relation(fields: [user_id], references: [id])
+  phone      String
+  cpf        String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  appointments Appointment[]
+}
+
+model Appointment {
+  id               String   @id @default(uuid())
+  client_id        String
+  client           Client   @relation(fields: [client_id], references: [id])
+  specialist_id    String
+  specialist       Specialist @relation(fields: [specialist_id], references: [id])
+  scheduled_by_id  String
+  scheduled_by     User     @relation(name: "scheduled_by", fields: [scheduled_by_id], references: [id])
+  date             DateTime
+  time             String
+  status           AppointmentStatus @default(pending)
+  rescheduled_from_id String?
+  rescheduled_from Appointment? @relation("rescheduled_appointments", fields: [rescheduled_from_id], references: [id])
+  rescheduled_to   Appointment[] @relation("rescheduled_appointments")
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+}
+
+enum AppointmentStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+  rescheduled
+  expired
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  user_id     String
+  user        User     @relation(fields: [user_id], references: [id])
+  action_type ActionType
+  entity      String
+  entity_id   String
+  message     String?
+  created_at  DateTime @default(now())
+}
+
+enum ActionType {
+  create
+  reschedule
+  cancel
+  validation_error
+}
