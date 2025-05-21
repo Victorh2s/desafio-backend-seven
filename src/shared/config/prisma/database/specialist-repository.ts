@@ -24,4 +24,13 @@ export class SpecialistRepository {
     });
     return;
   }
+
+  async findManySpecialistsBySpecialty(specialty: string) {
+    const specialists = await prisma.specialist.findMany({
+      where: { specialty },
+      include: { user: true },
+    });
+
+    return specialists;
+  }
 }
