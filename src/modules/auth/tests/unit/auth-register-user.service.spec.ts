@@ -7,6 +7,7 @@ import { AuthService } from "../../auth.service";
 const mockAuthRepository: jest.Mocked<AuthRepository> = {
   registerUser: jest.fn(),
   findUserByEmail: jest.fn(),
+  findUserById: jest.fn(),
 };
 
 jest.mock("bcryptjs", () => ({

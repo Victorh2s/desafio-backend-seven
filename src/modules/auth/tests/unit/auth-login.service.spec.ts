@@ -17,6 +17,7 @@ jest.mock("jsonwebtoken", () => ({
 const mockAuthRepository: jest.Mocked<AuthRepository> = {
   registerUser: jest.fn(),
   findUserByEmail: jest.fn(),
+  findUserById: jest.fn(),
 };
 
 describe("AuthService - Login", () => {

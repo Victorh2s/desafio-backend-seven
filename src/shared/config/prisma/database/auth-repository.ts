@@ -30,4 +30,24 @@ export class AuthRepository {
 
     return foundUser;
   }
+
+  async findUserById(id: string): Promise<{
+    name: string;
+    email: string;
+    password: string;
+    role: $Enums.Role;
+    priority: boolean;
+    active: boolean;
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+  } | null> {
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return foundUser;
+  }
 }
