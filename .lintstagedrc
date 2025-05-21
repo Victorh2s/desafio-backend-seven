@@ -1,0 +1,6 @@
+{
+"*.ts": [
+      "eslint --fix --ignore-pattern \"*.spec.ts\" --ignore-pattern \"*.test.ts\"",
+      "prettier --write"
+]
+} 
