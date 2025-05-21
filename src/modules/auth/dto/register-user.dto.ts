@@ -18,7 +18,21 @@ export const RegisterUserDto = z.object({
     required_error: "Tipo de usuário é obrigatório",
     invalid_type_error: "Tipo de usuário inválido",
   }),
-
+  phone: z
+    .string()
+    .min(10, "Telefone deve ter no mínimo 10 dígitos")
+    .max(15, "Telefone deve ter no máximo 15 dígitos")
+    .regex(
+      /^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})-?(\d{4}))$/,
+      "Formato de telefone inválido. Use (DD) 9XXXX-XXXX ou similar",
+    ),
+  cpf: z
+    .string()
+    .regex(
+      /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
+      "Formato de CPF inválido. Use XXX.XXX.XXX-XX",
+    )
+    .optional(),
   priority: z.boolean().default(false).optional(),
   active: z.boolean().default(true).optional(),
 });

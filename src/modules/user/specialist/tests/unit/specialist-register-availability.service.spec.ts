@@ -6,6 +6,8 @@ import { UserNotFoundError } from "../../../../../shared/errors/user-not-found.e
 
 const mockSpecialistRepository: jest.Mocked<SpecialistRepository> = {
   registerAvailability: jest.fn(),
+  findManySpecialistsBySpecialty: jest.fn(),
+  findSpecialistsByID: jest.fn(),
 };
 
 const mockAuthRepository: jest.Mocked<AuthRepository> = {

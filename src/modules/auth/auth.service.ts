@@ -20,6 +20,8 @@ export class AuthService {
 
     const newUser = {
       ...user,
+      phone: user.phone,
+      cpf: user.cpf,
       password: passwordhash,
     };
     return await this.authRepository.registerUser(newUser);

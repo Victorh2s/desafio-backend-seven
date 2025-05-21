@@ -6,7 +6,20 @@ const prisma = new PrismaClient();
 export class AuthRepository {
   async registerUser(data: RegisterDto): Promise<void> {
     await prisma.user.create({
-      data,
+      data: {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: data.role,
+        priority: data.priority,
+        active: data.active,
+        client: {
+          create: {
+            phone: data.phone,
+            cpf: data.cpf || "",
+          },
+        },
+      },
     });
     return;
   }
@@ -14,10 +27,10 @@ export class AuthRepository {
   async findUserByEmail(email: string): Promise<{
     name: string;
     email: string;
-    password: string;
     role: $Enums.Role;
     priority: boolean;
     active: boolean;
+    password: string;
     id: string;
     created_at: Date;
     updated_at: Date;
@@ -34,7 +47,6 @@ export class AuthRepository {
   async findUserById(id: string): Promise<{
     name: string;
     email: string;
-    password: string;
     role: $Enums.Role;
     priority: boolean;
     active: boolean;
@@ -45,6 +57,9 @@ export class AuthRepository {
     const foundUser = await prisma.user.findUnique({
       where: {
         id,
+      },
+      omit: {
+        password: true,
       },
     });
 

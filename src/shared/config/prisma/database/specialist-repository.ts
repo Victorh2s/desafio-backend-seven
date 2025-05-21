@@ -28,9 +28,30 @@ export class SpecialistRepository {
   async findManySpecialistsBySpecialty(specialty: string) {
     const specialists = await prisma.specialist.findMany({
       where: { specialty },
-      include: { user: true },
+      include: {
+        user: {
+          omit: {
+            password: true,
+          },
+        },
+      },
     });
 
     return specialists;
+  }
+
+  async findSpecialistsByID(specialistId: string) {
+    const specialist = await prisma.specialist.findUnique({
+      where: { id: specialistId },
+      include: {
+        user: {
+          omit: {
+            password: true,
+          },
+        },
+      },
+    });
+
+    return specialist;
   }
 }

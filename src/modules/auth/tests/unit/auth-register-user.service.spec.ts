@@ -28,6 +28,7 @@ describe("AuthService - Register User", () => {
       email: "test@example.com",
       password: "123456",
       role: "admin",
+      phone: "11999999999",
     };
 
     await authService.registerUser(userData);
@@ -45,6 +46,7 @@ describe("AuthService - Register User", () => {
       email: "test@example.com",
       password: "123456",
       role: "admin",
+      phone: "11999999999",
     };
 
     mockAuthRepository.registerUser.mockRejectedValue(
@@ -62,6 +64,7 @@ describe("AuthService - Register User", () => {
       email: "invalid",
       password: "123456",
       role: "admin" as const,
+      phone: "11999999999",
     };
     await expect(authService.registerUser(invalidUser)).rejects.toThrow();
   });
@@ -86,6 +89,7 @@ describe("AuthService - Register User", () => {
       email: "existing@example.com",
       password: "123456",
       role: "admin",
+      phone: "11999999999",
     };
 
     await expect(authService.registerUser(newUser)).rejects.toThrow(
