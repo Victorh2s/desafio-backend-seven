@@ -50,4 +50,15 @@ export class AppointmentController {
       AppointmentHandleErrors(res, error);
     }
   };
+
+  getClientAppointments = async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.auth_routes;
+      const appointments =
+        await this.appointmentService.getClientAppointments(userId);
+      return res.status(200).json(appointments);
+    } catch (error) {
+      AppointmentHandleErrors(res, error);
+    }
+  };
 }

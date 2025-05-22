@@ -12,6 +12,7 @@ export class ClientRepository {
             password: true,
           },
         },
+        appointments: true,
       },
     });
 

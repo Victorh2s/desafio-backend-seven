@@ -60,6 +60,7 @@ describe("AppointmentService - createAppointment", () => {
       created_at: new Date(),
       updated_at: new Date(),
     },
+    appointments: [],
   };
 
   const specialistMock = {

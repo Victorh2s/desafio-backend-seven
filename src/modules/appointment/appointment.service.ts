@@ -110,6 +110,16 @@ export class AppointmentService {
     return specialist.appointments;
   }
 
+  async getClientAppointments(userId: string) {
+    const client = await this.clientRepository.findClientByUserId(userId);
+
+    if (!client) {
+      throw new NotFoundClientError();
+    }
+
+    return client.appointments;
+  }
+
   async getAvailableSlots(date: string, specialty: string) {
     const inputDate = new Date(date + "T00:00:00");
     const now = new Date();
