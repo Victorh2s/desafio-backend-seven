@@ -1,0 +1,39 @@
+services:
+    mysql:
+      container_name: seven-mysql
+      image: mysql:8.0  
+      environment:
+          MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+          MYSQL_DATABASE: ${DB_NAME}
+      ports:
+        - ${DB_PORT}:3306
+      volumes:
+        - mysql_data:/var/lib/mysql
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+        interval: 5s
+        timeout: 5s
+        retries: 30
+
+    api:
+      container_name: desafio-backend-seven
+      build: .
+      ports: 
+        - ${PORT}:${PORT}
+      volumes:
+        - .:/home/api  
+      command: sh -c "while ! (timeout 3 bash -c 'cat < /dev/null > /dev/tcp/mysql/3306' 2>/dev/null); do sleep 2; echo 'Aguardando MySQL...'; done && npx prisma migrate deploy && npm run start"
+      environment:
+        NODE_ENV: production  
+        DATABASE_URL: ${DATABASE_URL}
+        JWT_SECRET: ${JWT_SECRET}
+        JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      restart: unless-stopped
+
+ 
+volumes:
+  mysql_data:
+
+networks:
+  seven-network:
+    driver: bridge

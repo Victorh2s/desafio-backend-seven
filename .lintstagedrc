@@ -1,6 +1,6 @@
 {
 "*.ts": [
-      "eslint --fix --ignore-pattern \"*.spec.ts\" --ignore-pattern \"*.test.ts\"",
+      "eslint --fix --ignore-pattern 'prisma/generated/**' --ignore-pattern \"*.spec.ts\" --ignore-pattern \"*.test.ts\"",
       "prettier --write"
 ]
 } 

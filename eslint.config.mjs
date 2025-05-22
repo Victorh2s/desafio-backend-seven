@@ -23,7 +23,9 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+      ignores: ['prisma/generated/**'],
   },
+
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
