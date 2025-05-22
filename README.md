@@ -1,4 +1,3 @@
-```markdown
 # Desafio Backend Seven
 
 ## 🚀 Passos para execução local
@@ -157,5 +156,4 @@ curl --location --request PATCH 'http://localhost:3000/appointments/b1733452-b4a
 - Clientes podem visualizar slots disponíveis
 - Sistema de prioridade para agendamentos
 - Notificações automáticas via NodeCron
-``` 
 
