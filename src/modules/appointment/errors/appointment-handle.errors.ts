@@ -9,6 +9,8 @@ export function AppointmentHandleErrors(response: Response, error: unknown) {
     NotFoundSpecialistsBySpecialtyError: 404,
     NotPossibleQueryPastDatesError: 400,
     InvalidDataError: 400,
+    NotFoundAppointmentError: 404,
+    LateCancellationError: 422,
   };
 
   if (error instanceof Error) {

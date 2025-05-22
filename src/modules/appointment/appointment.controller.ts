@@ -61,4 +61,18 @@ export class AppointmentController {
       AppointmentHandleErrors(res, error);
     }
   };
+
+  cancelAppointment = async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.auth_routes;
+      const { appointmentId } = req.params;
+      const appointments = await this.appointmentService.cancelAppointment(
+        appointmentId,
+        userId,
+      );
+      return res.status(200).json(appointments);
+    } catch (error) {
+      AppointmentHandleErrors(res, error);
+    }
+  };
 }

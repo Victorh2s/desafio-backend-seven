@@ -49,3 +49,10 @@ appointmentRouter.get(
   VerifyRoleMiddleware("client"),
   controller.getClientAppointments,
 );
+
+appointmentRouter.delete(
+  "/:appointmentId",
+  VerifyTokenMiddleware,
+  VerifyRoleMiddleware("client"),
+  controller.cancelAppointment,
+);

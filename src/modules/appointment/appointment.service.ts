@@ -9,6 +9,8 @@ import { NotFoundClientError } from "./errors/not-found-client.error";
 import { NotFoundSpecialistError } from "./errors/not-found-specialist.error";
 import { SlotNotAvailableError } from "./errors/slot-not-available.error";
 import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
+import { NotFoundAppointmentError } from "./errors/not-found-appointment.error copy";
+import { LateCancellationError } from "./errors/late-cancellation.error";
 
 export class AppointmentService {
   constructor(
@@ -58,12 +60,12 @@ export class AppointmentService {
       time,
     );
 
-    await this.auditLogRepository.createAuditLog(
+    await this.auditLogRepository.createAuditLog({
       userId,
-      appointment.id,
-      appointmentDateTime,
+      appointmentId: appointment.id,
+      date: appointmentDateTime,
       time,
-    );
+    });
 
     return;
   }
@@ -118,6 +120,33 @@ export class AppointmentService {
     }
 
     return client.appointments;
+  }
+
+  async cancelAppointment(appointmentId: string, userId: string) {
+    const appointment =
+      await this.appointmentRepository.findAppointmentById(appointmentId);
+
+    if (!appointment) {
+      throw new NotFoundAppointmentError();
+    }
+
+    const localDateStr = appointment.date.toLocaleDateString("en-CA");
+    const appointmentDateTime = new Date(`${localDateStr}T${appointment.time}`);
+
+    const sixHoursInMs = 6 * 60 * 60 * 1000;
+    if (appointmentDateTime.getTime() - sixHoursInMs < Date.now()) {
+      throw new LateCancellationError();
+    }
+
+    await this.appointmentRepository.updateAppointmentForCancelled(
+      appointmentId,
+    );
+
+    await this.auditLogRepository.createAuditLog({
+      userId,
+      appointmentId,
+      message: "Appointment cancelled",
+    });
   }
 
   async getAvailableSlots(date: string, specialty: string) {

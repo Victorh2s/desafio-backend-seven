@@ -19,6 +19,8 @@ const mockAppointmentRepository: jest.Mocked<AppointmentRepository> = {
   findManyExistingAppointments: jest.fn(),
   createAppointment: jest.fn(),
   findAppointmentBySpecialististId: jest.fn(),
+  findAppointmentById: jest.fn(),
+  updateAppointmentForCancelled: jest.fn(),
 };
 
 const mockClientRepository: jest.Mocked<ClientRepository> = {
@@ -214,10 +216,11 @@ describe("AppointmentService - createAppointment", () => {
     expect(
       mockAuditLogRepository.createAuditLog.mockName("Create Audit Log"),
     ).toHaveBeenCalledWith(
-      "user-123",
-      "appointment-1",
-      appointmentDateTime,
-      appointmentTime,
+      expect.objectContaining({
+        appointmentId: "appointment-1",
+        time: "09:00",
+        userId: "user-123",
+      }),
     );
   });
 });

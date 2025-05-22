@@ -33,6 +33,21 @@ export class AppointmentRepository {
     return existingAppointment;
   }
 
+  async findAppointmentById(appointmentId: string) {
+    const appointment = await prisma.appointment.findUnique({
+      where: {
+        id: appointmentId,
+        status: { notIn: ["cancelled", "expired"] },
+      },
+      include: {
+        client: true,
+        specialist: true,
+      },
+    });
+
+    return appointment;
+  }
+
   async createAppointment(
     clientId: string,
     specialistId: string,
@@ -50,6 +65,15 @@ export class AppointmentRepository {
         status: "pending",
       },
     });
+    return appointment;
+  }
+
+  async updateAppointmentForCancelled(appointmentId: string) {
+    const appointment = await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: { status: "cancelled" },
+    });
+
     return appointment;
   }
 }
