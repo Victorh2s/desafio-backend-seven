@@ -20,8 +20,6 @@ services:
       build: .
       ports: 
         - ${PORT}:${PORT}
-      volumes:
-        - .:/home/api  
       command: sh -c "while ! (timeout 3 bash -c 'cat < /dev/null > /dev/tcp/mysql/3306' 2>/dev/null); do sleep 2; echo 'Aguardando MySQL - Isso deve demorar um tempinho...'; done && npx prisma migrate deploy && npm run test:ver && npm run start"
       environment:
         NODE_ENV: production  
