@@ -99,6 +99,17 @@ export class AppointmentService {
     return availableTimes.includes(timeStr);
   }
 
+  async getSpecialistAppointments(userId: string) {
+    const specialist =
+      await this.specialistRepository.findSpecialistsByUserId(userId);
+
+    if (!specialist) {
+      throw new NotFoundSpecialistError();
+    }
+
+    return specialist.appointments;
+  }
+
   async getAvailableSlots(date: string, specialty: string) {
     const inputDate = new Date(date + "T00:00:00");
     const now = new Date();

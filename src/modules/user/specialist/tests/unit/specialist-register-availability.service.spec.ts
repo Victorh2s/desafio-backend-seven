@@ -8,6 +8,7 @@ const mockSpecialistRepository: jest.Mocked<SpecialistRepository> = {
   registerAvailability: jest.fn(),
   findManySpecialistsBySpecialty: jest.fn(),
   findSpecialistsByID: jest.fn(),
+  findSpecialistsByUserId: jest.fn(),
 };
 
 const mockAuthRepository: jest.Mocked<AuthRepository> = {

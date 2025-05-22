@@ -54,4 +54,20 @@ export class SpecialistRepository {
 
     return specialist;
   }
+
+  async findSpecialistsByUserId(userId: string) {
+    const specialist = await prisma.specialist.findUnique({
+      where: { user_id: userId },
+      include: {
+        appointments: true,
+        user: {
+          omit: {
+            password: true,
+          },
+        },
+      },
+    });
+
+    return specialist;
+  }
 }

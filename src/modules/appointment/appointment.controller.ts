@@ -34,11 +34,20 @@ export class AppointmentController {
         time,
         scheduledById,
       );
-      res.status(201).json(appointment);
+      return res.status(201).json(appointment);
     } catch (error) {
-      res.status(400).json({
-        error: error instanceof Error ? error.message : "Invalid data",
-      });
+      AppointmentHandleErrors(res, error);
+    }
+  };
+
+  getAppointmentsBySpecialist = async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.auth_routes;
+      const appointments =
+        await this.appointmentService.getSpecialistAppointments(userId);
+      return res.status(200).json(appointments);
+    } catch (error) {
+      AppointmentHandleErrors(res, error);
     }
   };
 }

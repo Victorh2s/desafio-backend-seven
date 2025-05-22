@@ -6,11 +6,13 @@ import { NotPossibleQueryPastDatesError } from "../errors/not-possible-query-pas
 import { NotFoundSpecialistsBySpecialtyError } from "../errors/not-found-specialists-by-specialty.error";
 import { ClientRepository } from "src/shared/config/prisma/database/client-repository";
 import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
+import { Role } from "prisma/generated";
 
 const mockSpecialistRepository: jest.Mocked<SpecialistRepository> = {
   findManySpecialistsBySpecialty: jest.fn(),
   registerAvailability: jest.fn(),
   findSpecialistsByID: jest.fn(),
+  findSpecialistsByUserId: jest.fn(),
 };
 
 const mockAppointmentRepository: jest.Mocked<AppointmentRepository> = {
@@ -59,7 +61,7 @@ describe("AppointmentService", () => {
         name: "Dr. Nutrition",
         email: "nutrition@example.com",
         password: "hashed",
-        role: "specialist" as const,
+        role: "specialist" as Role,
         priority: false,
         active: true,
         created_at: new Date(),
@@ -84,7 +86,7 @@ describe("AppointmentService", () => {
         name: "Dr. Nutrition 2",
         email: "nutrition2@example.com",
         password: "hashed",
-        role: "specialist" as const,
+        role: "specialist" as Role,
         priority: false,
         active: true,
         created_at: new Date(),
@@ -108,7 +110,7 @@ describe("AppointmentService", () => {
     it("should throw error for past dates", async () => {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      const pastDate = yesterday.toISOString().split("T")[0];
+      const pastDate = yesterday.toLocaleDateString("en-CA");
 
       await expect(
         appointmentService.getAvailableSlots(pastDate, "nutrition"),

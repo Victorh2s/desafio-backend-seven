@@ -35,3 +35,10 @@ appointmentRouter.post(
   VerifyRoleMiddleware("client"),
   controller.createAppointment,
 );
+
+appointmentRouter.get(
+  "/specialist",
+  VerifyTokenMiddleware,
+  VerifyRoleMiddleware("specialist"),
+  controller.getAppointmentsBySpecialist,
+);
