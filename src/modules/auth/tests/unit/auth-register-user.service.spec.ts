@@ -1,14 +1,8 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { AuthRepository } from "src/shared/config/prisma/database/auth-repository";
 import { hash } from "bcryptjs";
 import { RegisterDto } from "../../dto/register-user.dto";
 import { AuthService } from "../../auth.service";
-
-const mockAuthRepository: jest.Mocked<AuthRepository> = {
-  registerUser: jest.fn(),
-  findUserByEmail: jest.fn(),
-  findUserById: jest.fn(),
-};
+import { mockAuthRepository } from "../../../../shared/mocks/repositories.mock";
 
 jest.mock("bcryptjs", () => ({
   hash: jest.fn().mockResolvedValue("hashed_password"),

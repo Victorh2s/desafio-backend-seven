@@ -1,9 +1,9 @@
-import { AuthRepository } from "src/shared/config/prisma/database/auth-repository";
 import { compare } from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { AuthService } from "../../auth.service";
 import { LoginDto } from "../../dto/login.dto";
 import { AuthInvalidError } from "../../errors/auth-invalid.error";
+import { mockAuthRepository } from "../../../../shared/mocks/repositories.mock";
 
 jest.mock("bcryptjs", () => ({
   hash: jest.fn().mockResolvedValue("hashed_password"),
@@ -13,12 +13,6 @@ jest.mock("bcryptjs", () => ({
 jest.mock("jsonwebtoken", () => ({
   sign: jest.fn().mockReturnValue("mock_token"),
 }));
-
-const mockAuthRepository: jest.Mocked<AuthRepository> = {
-  registerUser: jest.fn(),
-  findUserByEmail: jest.fn(),
-  findUserById: jest.fn(),
-};
 
 describe("AuthService - Login", () => {
   let authService: AuthService;

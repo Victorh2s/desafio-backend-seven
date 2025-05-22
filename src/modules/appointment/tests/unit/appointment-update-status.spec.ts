@@ -1,37 +1,13 @@
-import { SpecialistRepository } from "src/shared/config/prisma/database/specialist-repository";
-import { AppointmentService } from "../appointment.service";
-import { AppointmentRepository } from "src/shared/config/prisma/database/appointment-repository";
-import { ClientRepository } from "src/shared/config/prisma/database/client-repository";
-import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
-import { AppointmentStatus, Role } from "../../../../prisma/generated";
-import { NotFoundAppointmentError } from "../errors/not-found-appointment.error";
-import { NotAuthorizationError } from "../../auth/errors/not-authorization.error";
-
-const mockSpecialistRepository: jest.Mocked<SpecialistRepository> = {
-  findManySpecialistsBySpecialty: jest.fn(),
-  registerAvailability: jest.fn(),
-  findSpecialistsByID: jest.fn(),
-  findSpecialistsByUserId: jest.fn(),
-};
-
-const mockAppointmentRepository: jest.Mocked<AppointmentRepository> = {
-  findManyExistingAppointments: jest.fn(),
-  createAppointment: jest.fn(),
-  findAppointmentBySpecialististId: jest.fn(),
-  findAppointmentById: jest.fn(),
-  updateAppointmentForCancelled: jest.fn(),
-  updateAppointmentStatus: jest.fn(),
-  findAppointmentsForNotification: jest.fn(),
-  findManyForScheduler: jest.fn(),
-};
-
-const mockClientRepository: jest.Mocked<ClientRepository> = {
-  findClientByUserId: jest.fn(),
-};
-
-const mockAuditLogRepository: jest.Mocked<AuditLogRepository> = {
-  createAuditLog: jest.fn(),
-};
+import { AppointmentService } from "../../appointment.service";
+import { AppointmentStatus, Role } from "../../../../../prisma/generated";
+import { NotFoundAppointmentError } from "../../errors/not-found-appointment.error";
+import { NotAuthorizationError } from "../../../auth/errors/not-authorization.error";
+import {
+  mockAppointmentRepository,
+  mockAuditLogRepository,
+  mockClientRepository,
+  mockSpecialistRepository,
+} from "../../../../shared/mocks/repositories.mock";
 
 describe("AppointmentService - updateAppointmentStatus", () => {
   let service: AppointmentService;
@@ -91,18 +67,6 @@ describe("AppointmentService - updateAppointmentStatus", () => {
       },
     },
   };
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.useFakeTimers().setSystemTime(new Date("2023-05-01T12:00:00Z"));
-    service = new AppointmentService(
-      mockSpecialistRepository,
-      mockClientRepository,
-      mockAppointmentRepository,
-      mockAuditLogRepository,
-    );
-  });
-
   const mockSpecialistWithAppointments = {
     id: "spec-1",
     user_id: "user-1",
@@ -205,6 +169,18 @@ describe("AppointmentService - updateAppointmentStatus", () => {
       },
     ],
   };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.useFakeTimers().setSystemTime(new Date("2023-05-01T12:00:00Z"));
+    service = new AppointmentService(
+      mockSpecialistRepository,
+      mockClientRepository,
+      mockAppointmentRepository,
+      mockAuditLogRepository,
+    );
+  });
+
   it("should update status if user is admin", async () => {
     mockAppointmentRepository.findAppointmentById.mockResolvedValue(
       mockAppointment,

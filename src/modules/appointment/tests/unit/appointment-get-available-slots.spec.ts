@@ -1,51 +1,17 @@
-import { SpecialistRepository } from "src/shared/config/prisma/database/specialist-repository";
-import { AppointmentService } from "../appointment.service";
-import { AppointmentRepository } from "src/shared/config/prisma/database/appointment-repository";
-import { InvalidDataError } from "../errors/invalid-data.error";
-import { NotPossibleQueryPastDatesError } from "../errors/not-possible-query-paste.error";
-import { NotFoundSpecialistsBySpecialtyError } from "../errors/not-found-specialists-by-specialty.error";
-import { ClientRepository } from "src/shared/config/prisma/database/client-repository";
-import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
 import { Role } from "prisma/generated";
-
-const mockSpecialistRepository: jest.Mocked<SpecialistRepository> = {
-  findManySpecialistsBySpecialty: jest.fn(),
-  registerAvailability: jest.fn(),
-  findSpecialistsByID: jest.fn(),
-  findSpecialistsByUserId: jest.fn(),
-};
-
-const mockAppointmentRepository: jest.Mocked<AppointmentRepository> = {
-  findManyExistingAppointments: jest.fn(),
-  createAppointment: jest.fn(),
-  findAppointmentBySpecialististId: jest.fn(),
-  findAppointmentById: jest.fn(),
-  updateAppointmentForCancelled: jest.fn(),
-  updateAppointmentStatus: jest.fn(),
-  findAppointmentsForNotification: jest.fn(),
-  findManyForScheduler: jest.fn(),
-};
-
-const mockClientRepository: jest.Mocked<ClientRepository> = {
-  findClientByUserId: jest.fn(),
-};
-
-const mockAuditLogRepository: jest.Mocked<AuditLogRepository> = {
-  createAuditLog: jest.fn(),
-};
+import { AppointmentService } from "../../appointment.service";
+import { InvalidDataError } from "../../errors/invalid-data.error";
+import { NotPossibleQueryPastDatesError } from "../../errors/not-possible-query-paste.error";
+import { NotFoundSpecialistsBySpecialtyError } from "../../errors/not-found-specialists-by-specialty.error";
+import {
+  mockAppointmentRepository,
+  mockAuditLogRepository,
+  mockClientRepository,
+  mockSpecialistRepository,
+} from "../../../../shared/mocks/repositories.mock";
 
 describe("AppointmentService", () => {
   let appointmentService: AppointmentService;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    appointmentService = new AppointmentService(
-      mockSpecialistRepository,
-      mockClientRepository,
-      mockAppointmentRepository,
-      mockAuditLogRepository,
-    );
-  });
 
   const mockSpecialists = [
     {
@@ -104,6 +70,16 @@ describe("AppointmentService", () => {
     { id: "app-1", specialist_id: "spec-1", date: "2025-01-01", time: "10:00" },
     { id: "app-2", specialist_id: "spec-1", date: "2025-01-01", time: "14:00" },
   ];
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    appointmentService = new AppointmentService(
+      mockSpecialistRepository,
+      mockClientRepository,
+      mockAppointmentRepository,
+      mockAuditLogRepository,
+    );
+  });
 
   describe("getAvailableSlots", () => {
     it("should throw error for invalid date format", async () => {

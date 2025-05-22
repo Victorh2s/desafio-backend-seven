@@ -1,21 +1,10 @@
-import { SpecialistRepository } from "src/shared/config/prisma/database/specialist-repository";
-import { AuthRepository } from "src/shared/config/prisma/database/auth-repository";
 import { SpecialistService } from "../../specialist.service";
 import { RegisterSpecialistAvailabilityDto } from "../../dto/register-specialist-availability";
 import { UserNotFoundError } from "../../../../../shared/errors/user-not-found.error";
-
-const mockSpecialistRepository: jest.Mocked<SpecialistRepository> = {
-  registerAvailability: jest.fn(),
-  findManySpecialistsBySpecialty: jest.fn(),
-  findSpecialistsByID: jest.fn(),
-  findSpecialistsByUserId: jest.fn(),
-};
-
-const mockAuthRepository: jest.Mocked<AuthRepository> = {
-  findUserById: jest.fn(),
-  findUserByEmail: jest.fn(),
-  registerUser: jest.fn(),
-};
+import {
+  mockAuthRepository,
+  mockSpecialistRepository,
+} from "../../../../../shared/mocks/repositories.mock";
 
 describe("SpecialistService", () => {
   let specialistService: SpecialistService;

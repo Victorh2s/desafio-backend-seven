@@ -1,37 +1,13 @@
-import { SpecialistRepository } from "src/shared/config/prisma/database/specialist-repository";
-import { AppointmentService } from "../appointment.service";
-import { AppointmentRepository } from "src/shared/config/prisma/database/appointment-repository";
-import { ClientRepository } from "src/shared/config/prisma/database/client-repository";
-import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
+import { AppointmentService } from "../../appointment.service";
 import { AppointmentStatus, Role } from "prisma/generated";
-import { LateCancellationError } from "../errors/late-cancellation.error";
-import { NotFoundAppointmentError } from "../errors/not-found-appointment.error";
-
-const mockSpecialistRepository: jest.Mocked<SpecialistRepository> = {
-  findManySpecialistsBySpecialty: jest.fn(),
-  registerAvailability: jest.fn(),
-  findSpecialistsByID: jest.fn(),
-  findSpecialistsByUserId: jest.fn(),
-};
-
-const mockAppointmentRepository: jest.Mocked<AppointmentRepository> = {
-  findManyExistingAppointments: jest.fn(),
-  createAppointment: jest.fn(),
-  findAppointmentBySpecialististId: jest.fn(),
-  findAppointmentById: jest.fn(),
-  updateAppointmentForCancelled: jest.fn(),
-  updateAppointmentStatus: jest.fn(),
-  findAppointmentsForNotification: jest.fn(),
-  findManyForScheduler: jest.fn(),
-};
-
-const mockClientRepository: jest.Mocked<ClientRepository> = {
-  findClientByUserId: jest.fn(),
-};
-
-const mockAuditLogRepository: jest.Mocked<AuditLogRepository> = {
-  createAuditLog: jest.fn(),
-};
+import { LateCancellationError } from "../../errors/late-cancellation.error";
+import { NotFoundAppointmentError } from "../../errors/not-found-appointment.error";
+import {
+  mockAppointmentRepository,
+  mockAuditLogRepository,
+  mockClientRepository,
+  mockSpecialistRepository,
+} from "../../../../shared/mocks/repositories.mock";
 
 describe("AppointmentService - cancelAppointment", () => {
   let service: AppointmentService;
@@ -41,7 +17,7 @@ describe("AppointmentService - cancelAppointment", () => {
     client_id: "client-1",
     specialist_id: "spec-1",
     scheduled_by_id: "scheduler-1",
-    date: new Date(Date.now() + 7 * 60 * 60 * 1000), // 7 horas no futuro
+    date: new Date(Date.now() + 7 * 60 * 60 * 1000),
     time: "14:00",
     status: "confirmed" as AppointmentStatus,
     created_at: new Date(),

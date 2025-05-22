@@ -1,51 +1,17 @@
-import { AppointmentService } from "../appointment.service";
-import { SpecialistRepository } from "src/shared/config/prisma/database/specialist-repository";
-import { AppointmentRepository } from "src/shared/config/prisma/database/appointment-repository";
-import { ClientRepository } from "src/shared/config/prisma/database/client-repository";
-import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
-import { NotFoundClientError } from "../errors/not-found-client.error";
-import { NotFoundSpecialistError } from "../errors/not-found-specialist.error";
-import { SlotNotAvailableError } from "../errors/slot-not-available.error";
+import {
+  mockAppointmentRepository,
+  mockAuditLogRepository,
+  mockClientRepository,
+  mockSpecialistRepository,
+} from "../../../../shared/mocks/repositories.mock";
+import { AppointmentService } from "../../appointment.service";
+import { NotFoundClientError } from "../../errors/not-found-client.error";
+import { NotFoundSpecialistError } from "../../errors/not-found-specialist.error";
+import { SlotNotAvailableError } from "../../errors/slot-not-available.error";
 import { AppointmentStatus } from "prisma/generated";
-
-const mockSpecialistRepository: jest.Mocked<SpecialistRepository> = {
-  findManySpecialistsBySpecialty: jest.fn(),
-  registerAvailability: jest.fn(),
-  findSpecialistsByID: jest.fn(),
-  findSpecialistsByUserId: jest.fn(),
-};
-
-const mockAppointmentRepository: jest.Mocked<AppointmentRepository> = {
-  findManyExistingAppointments: jest.fn(),
-  createAppointment: jest.fn(),
-  findAppointmentBySpecialististId: jest.fn(),
-  findAppointmentById: jest.fn(),
-  updateAppointmentForCancelled: jest.fn(),
-  updateAppointmentStatus: jest.fn(),
-  findAppointmentsForNotification: jest.fn(),
-  findManyForScheduler: jest.fn(),
-};
-
-const mockClientRepository: jest.Mocked<ClientRepository> = {
-  findClientByUserId: jest.fn(),
-};
-
-const mockAuditLogRepository: jest.Mocked<AuditLogRepository> = {
-  createAuditLog: jest.fn(),
-};
 
 describe("AppointmentService - createAppointment", () => {
   let service: AppointmentService;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    service = new AppointmentService(
-      mockSpecialistRepository,
-      mockClientRepository,
-      mockAppointmentRepository,
-      mockAuditLogRepository,
-    );
-  });
 
   const clientMock = {
     id: "client-1",
@@ -106,6 +72,16 @@ describe("AppointmentService - createAppointment", () => {
     scheduled_by_id: "admin-999",
     rescheduled_from_id: null,
   };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    service = new AppointmentService(
+      mockSpecialistRepository,
+      mockClientRepository,
+      mockAppointmentRepository,
+      mockAuditLogRepository,
+    );
+  });
 
   it("should throw NotFoundClientError if client is not found", async () => {
     mockClientRepository.findClientByUserId.mockResolvedValue(null);
