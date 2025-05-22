@@ -2,8 +2,6 @@ import "reflect-metadata";
 import express from "express";
 import cors from "cors";
 import { authRouter } from "./modules/auth/auth.router";
-import { VerifyTokenMiddleware } from "./modules/auth/middleware/verify-token";
-import { VerifyRoleMiddleware } from "./modules/auth/middleware/verify-role";
 import { specialistRouter } from "./modules/user/specialist/specialist.router";
 import { appointmentRouter } from "./modules/appointment/appointment.router";
 
@@ -16,11 +14,6 @@ app.use("/auth", authRouter);
 app.use("/specialist", specialistRouter);
 app.use("/appointments", appointmentRouter);
 
-app.get(
-  "/",
-  VerifyTokenMiddleware,
-  VerifyRoleMiddleware("specialist"),
-  (req, res) => {
-    return res.json("ola").status(200);
-  },
-);
+app.get("/", (req, res) => {
+  return res.json("Servidor funcionando 🚀!").status(200);
+});
