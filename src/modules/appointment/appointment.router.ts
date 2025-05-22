@@ -56,3 +56,10 @@ appointmentRouter.delete(
   VerifyRoleMiddleware("client"),
   controller.cancelAppointment,
 );
+
+appointmentRouter.patch(
+  "/:appointmentId",
+  VerifyTokenMiddleware,
+  VerifyRoleMiddleware("specialist"),
+  controller.updateAppointmentStatus,
+);

@@ -5,7 +5,7 @@ import { ClientRepository } from "src/shared/config/prisma/database/client-repos
 import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
 import { AppointmentStatus, Role } from "prisma/generated";
 import { LateCancellationError } from "../errors/late-cancellation.error";
-import { NotFoundAppointmentError } from "../errors/not-found-appointment.error copy";
+import { NotFoundAppointmentError } from "../errors/not-found-appointment.error";
 
 const mockSpecialistRepository: jest.Mocked<SpecialistRepository> = {
   findManySpecialistsBySpecialty: jest.fn(),
@@ -20,6 +20,7 @@ const mockAppointmentRepository: jest.Mocked<AppointmentRepository> = {
   findAppointmentBySpecialististId: jest.fn(),
   findAppointmentById: jest.fn(),
   updateAppointmentForCancelled: jest.fn(),
+  updateAppointmentStatus: jest.fn(),
 };
 
 const mockClientRepository: jest.Mocked<ClientRepository> = {

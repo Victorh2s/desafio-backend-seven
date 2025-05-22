@@ -1,4 +1,4 @@
-import { PrismaClient } from "prisma/generated";
+import { AppointmentStatus, PrismaClient } from "prisma/generated";
 
 const prisma = new PrismaClient();
 
@@ -72,6 +72,18 @@ export class AppointmentRepository {
     const appointment = await prisma.appointment.update({
       where: { id: appointmentId },
       data: { status: "cancelled" },
+    });
+
+    return appointment;
+  }
+
+  async updateAppointmentStatus(
+    appointmentId: string,
+    status: AppointmentStatus,
+  ) {
+    const appointment = await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: { status },
     });
 
     return appointment;

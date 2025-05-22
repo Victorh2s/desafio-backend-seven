@@ -21,6 +21,7 @@ const mockAppointmentRepository: jest.Mocked<AppointmentRepository> = {
   findAppointmentBySpecialististId: jest.fn(),
   findAppointmentById: jest.fn(),
   updateAppointmentForCancelled: jest.fn(),
+  updateAppointmentStatus: jest.fn(),
 };
 
 const mockClientRepository: jest.Mocked<ClientRepository> = {

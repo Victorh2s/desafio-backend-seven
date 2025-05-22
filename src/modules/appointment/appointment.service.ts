@@ -9,8 +9,10 @@ import { NotFoundClientError } from "./errors/not-found-client.error";
 import { NotFoundSpecialistError } from "./errors/not-found-specialist.error";
 import { SlotNotAvailableError } from "./errors/slot-not-available.error";
 import { AuditLogRepository } from "src/shared/config/prisma/database/audit-log-repository";
-import { NotFoundAppointmentError } from "./errors/not-found-appointment.error copy";
+import { NotFoundAppointmentError } from "./errors/not-found-appointment.error";
 import { LateCancellationError } from "./errors/late-cancellation.error";
+import { AppointmentStatus, Role } from "prisma/generated";
+import { NotAuthorizationError } from "../auth/errors/not-authorization.error";
 
 export class AppointmentService {
   constructor(
@@ -147,6 +149,46 @@ export class AppointmentService {
       appointmentId,
       message: "Appointment cancelled",
     });
+  }
+
+  async updateAppointmentStatus(
+    appointmentId: string,
+    status: AppointmentStatus,
+    role: Role,
+    userId: string,
+  ) {
+    const appointment =
+      await this.appointmentRepository.findAppointmentById(appointmentId);
+
+    if (!appointment) {
+      throw new NotFoundAppointmentError();
+    }
+
+    if (role !== "admin") {
+      const foundSpecialistByUserId =
+        await this.specialistRepository.findSpecialistsByUserId(userId);
+
+      if (
+        !foundSpecialistByUserId ||
+        appointment.specialist_id !== foundSpecialistByUserId.id
+      ) {
+        throw new NotAuthorizationError();
+      }
+    }
+
+    const appointmentUpdated =
+      await this.appointmentRepository.updateAppointmentStatus(
+        appointmentId,
+        status,
+      );
+
+    await this.auditLogRepository.createAuditLog({
+      userId,
+      appointmentId,
+      message: `Appointment update status for ${status}`,
+    });
+
+    return appointmentUpdated;
   }
 
   async getAvailableSlots(date: string, specialty: string) {

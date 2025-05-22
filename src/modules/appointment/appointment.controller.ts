@@ -3,6 +3,7 @@ import { getAvailableSlotsDto } from "./dto/get-available-slots.dto";
 import { AppointmentService } from "./appointment.service";
 import { AppointmentHandleErrors } from "./errors/appointment-handle.errors";
 import { createAppointmentDto } from "./dto/create-appointment.dto";
+import { updateAppointmentStatusDto } from "./dto/update-status-appointment.dto";
 
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
@@ -71,6 +72,28 @@ export class AppointmentController {
         userId,
       );
       return res.status(200).json(appointments);
+    } catch (error) {
+      AppointmentHandleErrors(res, error);
+    }
+  };
+
+  updateAppointmentStatus = async (req: Request, res: Response) => {
+    try {
+      const { params, body, auth } =
+        await updateAppointmentStatusDto.parseAsync({
+          params: req.params,
+          body: req.body,
+          auth: req.auth_routes,
+        });
+
+      const updatedAppointment =
+        await this.appointmentService.updateAppointmentStatus(
+          params.appointmentId,
+          body.status,
+          auth.role,
+          auth.userId,
+        );
+      return res.status(200).json(updatedAppointment);
     } catch (error) {
       AppointmentHandleErrors(res, error);
     }

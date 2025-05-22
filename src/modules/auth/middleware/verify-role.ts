@@ -8,7 +8,7 @@ export function VerifyRoleMiddleware(roleToVerify: $Enums.Role) {
     const { role } = req.auth_routes;
 
     try {
-      if (role !== "ADMIN" && role !== roleToVerify) {
+      if (role !== "admin" && role !== roleToVerify) {
         AuthHandleErrors(res, new NotAuthorizationRoleError());
         return;
       }
