@@ -88,4 +88,57 @@ export class AppointmentRepository {
 
     return appointment;
   }
+
+  async findAppointmentsForNotification(startDate: Date, endDate: Date) {
+    const appointment = prisma.appointment.findMany({
+      where: {
+        status: "pending",
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      include: {
+        client: {
+          include: {
+            user: {
+              select: {
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
+        specialist: {
+          include: {
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return appointment;
+  }
+
+  async findManyForScheduler(now: Date, twentyFourHoursLater: Date) {
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        status: "pending",
+        date: {
+          gte: now,
+          lte: twentyFourHoursLater,
+        },
+      },
+      include: {
+        client: { include: { user: true } },
+        specialist: { include: { user: true } },
+      },
+    });
+
+    return appointments;
+  }
 }
