@@ -4,3 +4,4 @@ docker-compose.yml
 *.md
 dist
 coverage
+DesafioBackEndSeven.postman_collection.json

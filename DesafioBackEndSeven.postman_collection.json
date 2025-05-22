@@ -1,0 +1,306 @@
+{
+	"info": {
+		"_postman_id": "ca8fe457-094b-4910-9e0a-2b7e734af76f",
+		"name": "Desafio BackEnd Seven",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31832004"
+	},
+	"item": [
+		{
+			"name": "Get Teste",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"Jhon\",\r\n    \"email\":\"jhon@example.com\",\r\n    \"password\":\"Senha@12345\",\r\n    \"role\":\"admin\",\r\n    \"priority\": false,\r\n    \"active\":true\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"Jhon\",\r\n    \"email\":\"jhon@example.com\",\r\n    \"password\":\"Senha@12345\",\r\n    \"role\":\"admin\",\r\n    \"priority\": false,\r\n    \"active\":true\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Specialist Register Availability",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMyYzI3YjBkLThjZDctNGUzZC1iOGI0LTQ3ZWMyMTZlNTQ4ZiIsImlhdCI6MTc0Nzg4OTUzMSwiZXhwIjoxNzQ3OTc1OTMxLCJzdWIiOiJjMmMyN2IwZC04Y2Q3LTRlM2QtYjhiNC00N2VjMjE2ZTU0OGYifQ.I5JLq-3qA6ASUty36I1LDYf1dZco_8GGvjMiFnJReSg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"specialty\": \"nutrition\",\r\n  \"daily_limit\": 8,\r\n  \"min_interval_minutes\": 30,\r\n  \"availability\": {\r\n    \"monday\": [\"08:00\", \"10:00\"],\r\n    \"tuesday\": [\"14:00\", \"16:00\"],\r\n    \"wednesday\": [\"15:00\", \"17:00\", \"23:00\"],\r\n    \"thursday\": [\"01:55\", \"01:56\", \"02:00\"],\r\n    \"friday\": [\"02:06\", \"02:08\", \"02:10\"]\r\n\r\n  }\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/specialist/register-availability",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"specialist",
+						"register-availability"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View Available Slots - Client",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/appointments/slots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"appointments",
+						"slots"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Appointment - Client",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ3N2NkNDZhLWQ0MGEtNDNhMy05ZGRjLTA1ZWEyMGM3Nzc4MiIsImlhdCI6MTc0Nzg0MDk0NSwiZXhwIjoxNzQ3OTI3MzQ1LCJzdWIiOiJkNzdjZDQ2YS1kNDBhLTQzYTMtOWRkYy0wNWVhMjBjNzc3ODIifQ.IWP6Z_Gnrs7S_BBACfHSvIkY4p-UPVjfKh78mWVy3fE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"specialty\": \"nutrition\",\r\n  \"daily_limit\": 8,\r\n  \"min_interval_minutes\": 30,\r\n  \"availability\": {\r\n    \"monday\": [\"08:00\", \"10:00\"],\r\n    \"tuesday\": [\"14:00\", \"16:00\"]\r\n  }\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/specialist/register-availability",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"specialist",
+						"register-availability"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View Appointments - Client",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/appointments/slots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"appointments",
+						"slots"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View Appointments - Specialist",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/appointments/slots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"appointments",
+						"slots"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel appointment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhhM2Q3YjE0LTNkMzQtNDA5My05Mzc3LWYzMzBkOTlhYmY3NSIsImlhdCI6MTc0Nzg3NDYzNiwiZXhwIjoxNzQ3OTYxMDM2LCJzdWIiOiI4YTNkN2IxNC0zZDM0LTQwOTMtOTM3Ny1mMzMwZDk5YWJmNzUifQ.tbvyzXUXFiooY7R0QVEwG87kEww1yMiBa3vQb9JmG-g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/appointments/:appointmentId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"appointments",
+						":appointmentId"
+					],
+					"variable": [
+						{
+							"key": "appointmentId",
+							"value": "ac31484f-280d-474f-9717-c2763a5f4701"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update appointment status - Admin/Specialist",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhhM2Q3YjE0LTNkMzQtNDA5My05Mzc3LWYzMzBkOTlhYmY3NSIsImlhdCI6MTc0Nzg3NDYzNiwiZXhwIjoxNzQ3OTYxMDM2LCJzdWIiOiI4YTNkN2IxNC0zZDM0LTQwOTMtOTM3Ny1mMzMwZDk5YWJmNzUifQ.tbvyzXUXFiooY7R0QVEwG87kEww1yMiBa3vQb9JmG-g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"status\": \"completed\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/appointments/:appointmentId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"appointments",
+						":appointmentId"
+					],
+					"variable": [
+						{
+							"key": "appointmentId",
+							"value": "ac31484f-280d-474f-9717-c2763a5f4701"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
