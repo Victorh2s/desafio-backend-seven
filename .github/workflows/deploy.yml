@@ -21,12 +21,13 @@
       - name: Create .env file
         run: |
           cat <<EOF > .env
-          MYSQL_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
-          MYSQL_DATABASE=${{ secrets.DB_NAME }}
+          DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
+          DB_NAME=${{ secrets.DB_NAME }}
           DATABASE_URL=${{ secrets.DATABASE_URL }}
           JWT_SECRET=${{ secrets.JWT_SECRET }}
           JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}
           DB_PORT=${{ secrets.DB_PORT }}
+          PORT=${{ secrets.PORT }}
           EOF
       
       - name: Upload files to EC2
