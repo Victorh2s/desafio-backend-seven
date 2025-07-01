@@ -35,6 +35,8 @@
           scp -o StrictHostKeyChecking=no .env ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/desafio-backend-seven
           scp -o StrictHostKeyChecking=no deploy.sh ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/desafio-backend-seven
 
+      
+      
       - name: Make deploy.sh executable and run it
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'

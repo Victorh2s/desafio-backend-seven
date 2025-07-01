@@ -1,5 +1,7 @@
 FROM node:22.14.0
 
+RUN npm install -g pm2
+
 WORKDIR /home/api
 
 COPY package.json .
