@@ -1,0 +1,43 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+    
+    - name: Create .env file
+      run: |
+        cat <<EOF > .env
+        MYSQL_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
+        MYSQL_DATABASE=${{ secrets.DB_NAME }}
+        DATABASE_URL=${{ secrets.DATABASE_URL }}
+        JWT_SECRET=${{ secrets.JWT_SECRET }}
+        JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}
+        DB_PORT=${{ secrets.DB_PORT }}
+        EOF
+    
+    - name: Upload files to EC2
+      run: |
+        scp -o StrictHostKeyChecking=no .env ubuntu@${{ secrets.EC2_HOST }}:/desafio-backend-seven/
+        scp -o StrictHostKeyChecking=no deploy.sh ubuntu@${{ secrets.EC2_HOST }}:/desafio-backend-seven/
+
+    - name: Make deploy.sh executable and run it
+      run: |
+        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+        cd /desafio-backend-seven
+        chmod +x deploy.sh
+        ./deploy.sh
+        EOF
