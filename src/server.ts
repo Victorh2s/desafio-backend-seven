@@ -4,7 +4,7 @@ import { notificationScheduler } from "./cron/scheduler";
 process.env.TZ = "America/Sao_Paulo";
 console.log("Scheduler de notificações inicializado");
 
-app.listen(process.env.PORT || 8080, "0.0.0.0", () => {
+app.listen(process.env.PORT || 80, "0.0.0.0", () => {
   console.log(`Servidor rodando em http://localhost:${process.env.PORT}`);
 });
 
