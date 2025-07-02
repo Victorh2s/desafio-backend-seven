@@ -6,17 +6,31 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    
+    runs-on: self-hosted  # Runner instalado no próprio EC2
+      
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4  # Corrigido: alinhamento correto
+    
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          NODE_ENV=production
+          PORT=${{ secrets.PORT }}
+          EOF
 
-    - name: Login Docker Hub
-      run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Build Docker Image
-      run: docker build -t ${{ secrets.DOCKER_USER }}/deploy-seven .
-
-    - name: Push Image Docker
-      run: docker push ${{ secrets.DOCKER_USER }}/deploy-seven
+      - name: Copy .env to project directory
+        run: |
+          cp .env /home/ubuntu/desafio-backend-seven/
+      
+      - name: Make deploy.sh executable and run it
+        run: |
+          cd /home/ubuntu/desafio-backend-seven
+          chmod +x deploy.sh
+          ./deploy.sh
